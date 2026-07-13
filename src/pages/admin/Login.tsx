@@ -31,17 +31,6 @@ export default function AdminLogin() {
     }
   }
 
-  const handleDemoLogin = async () => {
-    setLoading(true)
-    const { error } = await signIn('demo@srivinayakapg.com', 'demo123')
-    setLoading(false)
-    if (error) {
-      toast.error(error)
-    } else {
-      toast.success('Welcome to Demo Mode!')
-      navigate(ROUTES.ADMIN_DASHBOARD)
-    }
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-indigo-950 flex items-center justify-center p-4">
@@ -135,20 +124,6 @@ export default function AdminLogin() {
             </button>
           </form>
 
-          <div className="relative flex py-4 items-center">
-            <div className="flex-grow border-t border-white/10"></div>
-            <span className="flex-shrink mx-4 text-gray-400 text-xs uppercase tracking-wider font-semibold">Or</span>
-            <div className="flex-grow border-t border-white/10"></div>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleDemoLogin}
-            disabled={loading}
-            className="w-full bg-white/5 hover:bg-white/10 text-white font-semibold py-3 px-4 rounded-xl border border-white/10 hover:border-white/20 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed shadow-md"
-          >
-            ⚡ Try Demo Mode (Offline)
-          </button>
 
           <p className="text-center text-xs text-gray-500 mt-6">
             Authorized personnel only. All access is logged.

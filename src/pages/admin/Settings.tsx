@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Settings, Save } from 'lucide-react'
 import { settingsApi } from '@/api/settings'
+import { useSettings } from '@/contexts/SettingsContext'
 import { Button } from '@/components/ui/Button'
 import { Input, TextArea } from '@/components/ui/Input'
 import { SkeletonCard } from '@/components/ui/Feedback'
@@ -26,6 +27,7 @@ const DEFAULT: SettingsForm = {
 }
 
 export default function AdminSettings() {
+  const { refreshSettings } = useSettings()
   const [form, setForm] = useState<SettingsForm>(DEFAULT)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -58,6 +60,7 @@ export default function AdminSettings() {
     setSaving(true)
     try {
       await settingsApi.bulkUpdate(form as unknown as Record<string, string>)
+      await refreshSettings()
       toast.success('Settings saved successfully!')
     } catch (e) { toast.error((e as Error).message) }
     finally { setSaving(false) }

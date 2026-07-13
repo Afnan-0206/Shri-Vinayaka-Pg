@@ -10,6 +10,7 @@ import { roomsApi } from '@/api/rooms'
 import { facilitiesApi } from '@/api/facilities'
 import { galleryApi } from '@/api/gallery'
 import { enquiriesApi } from '@/api/enquiries'
+import { useSettings } from '@/contexts/SettingsContext'
 import type { Room, Facility, GalleryImage } from '@/types'
 import { formatCurrency } from '@/utils/formatters'
 import { TESTIMONIALS, FAQS, ROOM_TYPES, GALLERY_CATEGORIES } from '@/constants'
@@ -66,7 +67,18 @@ function fadeInUp(delay = 0) {
 }
 
 export default function Home() {
+  const { settings } = useSettings()
   const [rooms, setRooms] = useState<Room[]>([])
+
+  const getShortLocation = () => {
+    const parts = (settings.address || '').split(',').map(p => p.trim()).filter(Boolean)
+    if (parts.length >= 2) {
+      const cityPart = parts[parts.length - 1].split('-')[0].trim()
+      const areaPart = parts[parts.length - 2]
+      return `${areaPart}, ${cityPart}`
+    }
+    return settings.address || 'Koramangala, Bengaluru'
+  }
   const [facilities, setFacilities] = useState<Facility[]>([])
   const [gallery, setGallery] = useState<GalleryImage[]>([])
   const [galleryCategory, setGalleryCategory] = useState('')
@@ -119,7 +131,7 @@ export default function Home() {
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center pt-20">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <span className="inline-flex items-center gap-2 bg-indigo-600/20 border border-indigo-500/30 text-indigo-300 text-xs font-semibold px-4 py-1.5 rounded-full mb-6 backdrop-blur-sm">
-              <MapPin className="w-3.5 h-3.5" /> Koramangala, Bengaluru
+              <MapPin className="w-3.5 h-3.5" /> {getShortLocation()}
             </span>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6">
               Comfortable PG Rooms<br />
@@ -127,7 +139,7 @@ export default function Home() {
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Professionals</span>
             </h1>
             <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-8 leading-relaxed">
-              Sri Vinayaka PG offers safe, clean, and affordable accommodation with home-cooked food, 
+              {settings.pg_name} offers safe, clean, and affordable accommodation with home-cooked food, 
               high-speed Wi-Fi, 24/7 security, housekeeping, and a peaceful environment to thrive.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center mb-12">
@@ -176,7 +188,7 @@ export default function Home() {
                 Your Home Away<br />From Home in Bengaluru
               </h2>
               <p className="text-gray-600 leading-relaxed mb-4">
-                Sri Vinayaka PG has been providing quality accommodation in Koramangala, Bengaluru since 2015. 
+                {settings.pg_name} has been providing quality accommodation in Koramangala, Bengaluru since 2015. 
                 We understand what students and working professionals need — a safe, clean, and comfortable place to call home.
               </p>
               <p className="text-gray-600 leading-relaxed mb-6">
@@ -386,20 +398,20 @@ export default function Home() {
                 <div className="flex items-start gap-3 mb-3">
                   <MapPin className="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold text-gray-900">Sri Vinayaka PG</p>
-                    <p className="text-sm text-gray-600">123, 5th Cross, Koramangala 4th Block<br />Bengaluru, Karnataka - 560034</p>
+                    <p className="font-semibold text-gray-900">{settings.pg_name}</p>
+                    <p className="text-sm text-gray-600 whitespace-pre-line">{settings.address}</p>
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 mt-4">
-                  <a href="https://maps.google.com/?q=Koramangala,Bengaluru" target="_blank" rel="noopener noreferrer"
+                  <a href={settings.maps_url || `https://maps.google.com/?q=${encodeURIComponent(settings.address)}`} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-2 bg-indigo-600 text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-indigo-700 transition-colors justify-center">
                     <ExternalLink className="w-4 h-4" /> Get Directions
                   </a>
-                  <a href="tel:+919876543210"
+                  <a href={`tel:${(settings.phone || '').replace(/\s+/g, '')}`}
                     className="flex items-center gap-2 bg-gray-100 text-gray-800 text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-gray-200 transition-colors justify-center">
                     <Phone className="w-4 h-4" /> Call Owner
                   </a>
-                  <a href="https://wa.me/919876543210?text=Hi, I'm interested in Sri Vinayaka PG" target="_blank" rel="noopener noreferrer"
+                  <a href={`https://wa.me/${(settings.whatsapp || '').replace(/[^0-9]/g, '')}?text=Hi, I'm interested in ${encodeURIComponent(settings.pg_name || '')}`} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-2 bg-green-600 text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-green-700 transition-colors justify-center">
                     <MessageCircle className="w-4 h-4" /> WhatsApp
                   </a>
@@ -429,7 +441,7 @@ export default function Home() {
             <motion.div {...fadeInUp(0.2)} className="rounded-2xl overflow-hidden shadow-xl border border-gray-200 h-80 lg:h-full min-h-[350px] bg-gray-100 flex items-center justify-center">
               <iframe
                 title="Sri Vinayaka PG Location"
-                src="https://maps.google.com/maps?q=Koramangala,Bengaluru&t=&z=14&ie=UTF8&iwloc=&output=embed"
+                src={`https://maps.google.com/maps?q=${encodeURIComponent(settings.address || 'Koramangala,Bengaluru')}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
                 className="w-full h-full"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

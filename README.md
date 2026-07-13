@@ -173,10 +173,6 @@ Copy the example environment file to `.env.local`:
 cp .env.example .env.local
 ```
 Edit the values in `.env.local` to link to your Supabase instance:
-```env
-VITE_SUPABASE_URL=https://your-project-id.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key-here
-```
 
 ### 4. Database Setup
 1. Create a project in [Supabase Console](https://database.new).

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Building2, Menu, X, Phone } from 'lucide-react'
+import { useSettings } from '@/contexts/SettingsContext'
 
 const NAV_LINKS = [
   { label: 'Home', href: '/#home' },
@@ -14,6 +15,7 @@ const NAV_LINKS = [
 ]
 
 export default function Navbar() {
+  const { settings } = useSettings()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
@@ -40,7 +42,7 @@ export default function Navbar() {
               <Building2 className="w-4 h-4 text-white" />
             </div>
             <div>
-              <p className={`font-bold text-sm leading-tight ${scrolled ? 'text-gray-900' : 'text-white'}`}>Sri Vinayaka PG</p>
+              <p className={`font-bold text-sm leading-tight ${scrolled ? 'text-gray-900' : 'text-white'}`}>{settings.pg_name}</p>
               <p className={`text-xs ${scrolled ? 'text-gray-400' : 'text-indigo-200'}`}>Bengaluru</p>
             </div>
           </Link>
@@ -67,7 +69,7 @@ export default function Navbar() {
             >
               Admin Portal
             </Link>
-            <a href="tel:+919876543210" className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${scrolled ? 'text-gray-600 hover:text-indigo-600' : 'text-white/80 hover:text-white'}`}>
+            <a href={`tel:${(settings.phone || '').replace(/\s+/g, '')}`} className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${scrolled ? 'text-gray-600 hover:text-indigo-600' : 'text-white/80 hover:text-white'}`}>
               <Phone className="w-3.5 h-3.5" />
               Call Now
             </a>

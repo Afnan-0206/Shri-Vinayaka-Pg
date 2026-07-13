@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { SettingsProvider } from '@/contexts/SettingsContext'
 import { ProtectedRoute } from '@/router/ProtectedRoute'
 import { AdminLayout } from '@/layouts/AdminLayout'
 import Navbar from '@/components/public/Navbar'
@@ -48,40 +49,42 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 3000,
-            style: { borderRadius: '12px', fontSize: '14px', fontFamily: 'Inter, sans-serif' },
-          }}
-        />
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            {/* Public Routes */}
-            <Route path={ROUTES.HOME} element={<PublicLayout><Home /></PublicLayout>} />
+        <SettingsProvider>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 3000,
+              style: { borderRadius: '12px', fontSize: '14px', fontFamily: 'Inter, sans-serif' },
+            }}
+          />
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              {/* Public Routes */}
+              <Route path={ROUTES.HOME} element={<PublicLayout><Home /></PublicLayout>} />
 
-            {/* Admin Login */}
-            <Route path={ROUTES.ADMIN_LOGIN} element={<AdminLogin />} />
+              {/* Admin Login */}
+              <Route path={ROUTES.ADMIN_LOGIN} element={<AdminLogin />} />
 
-            {/* Protected Admin Routes */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/admin" element={<Navigate to={ROUTES.ADMIN_DASHBOARD} replace />} />
-              <Route path={ROUTES.ADMIN_DASHBOARD}    element={<AdminPage><Dashboard /></AdminPage>} />
-              <Route path={ROUTES.ADMIN_ROOMS}         element={<AdminPage><AdminRooms /></AdminPage>} />
-              <Route path={ROUTES.ADMIN_ENQUIRIES}     element={<AdminPage><Enquiries /></AdminPage>} />
-              <Route path={ROUTES.ADMIN_VISITS}        element={<AdminPage><Visits /></AdminPage>} />
-              <Route path={ROUTES.ADMIN_RESIDENTS}     element={<AdminPage><Residents /></AdminPage>} />
-              <Route path={ROUTES.ADMIN_RENT}          element={<AdminPage><Rent /></AdminPage>} />
-              <Route path={ROUTES.ADMIN_GALLERY}       element={<AdminPage><AdminGallery /></AdminPage>} />
-              <Route path={ROUTES.ADMIN_FACILITIES}    element={<AdminPage><Facilities /></AdminPage>} />
-              <Route path={ROUTES.ADMIN_NOTIFICATIONS} element={<AdminPage><Notifications /></AdminPage>} />
-              <Route path={ROUTES.ADMIN_SETTINGS}      element={<AdminPage><Settings /></AdminPage>} />
-            </Route>
+              {/* Protected Admin Routes */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="/admin" element={<Navigate to={ROUTES.ADMIN_DASHBOARD} replace />} />
+                <Route path={ROUTES.ADMIN_DASHBOARD}    element={<AdminPage><Dashboard /></AdminPage>} />
+                <Route path={ROUTES.ADMIN_ROOMS}         element={<AdminPage><AdminRooms /></AdminPage>} />
+                <Route path={ROUTES.ADMIN_ENQUIRIES}     element={<AdminPage><Enquiries /></AdminPage>} />
+                <Route path={ROUTES.ADMIN_VISITS}        element={<AdminPage><Visits /></AdminPage>} />
+                <Route path={ROUTES.ADMIN_RESIDENTS}     element={<AdminPage><Residents /></AdminPage>} />
+                <Route path={ROUTES.ADMIN_RENT}          element={<AdminPage><Rent /></AdminPage>} />
+                <Route path={ROUTES.ADMIN_GALLERY}       element={<AdminPage><AdminGallery /></AdminPage>} />
+                <Route path={ROUTES.ADMIN_FACILITIES}    element={<AdminPage><Facilities /></AdminPage>} />
+                <Route path={ROUTES.ADMIN_NOTIFICATIONS} element={<AdminPage><Notifications /></AdminPage>} />
+                <Route path={ROUTES.ADMIN_SETTINGS}      element={<AdminPage><Settings /></AdminPage>} />
+              </Route>
 
-            {/* 404 */}
-            <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
-          </Routes>
-        </Suspense>
+              {/* 404 */}
+              <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
+            </Routes>
+          </Suspense>
+        </SettingsProvider>
       </AuthProvider>
     </BrowserRouter>
   )
